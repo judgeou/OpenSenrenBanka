@@ -1,0 +1,2 @@
+import{writeFile}from'node:fs/promises';import{xp3Index}from'./resources/xp3-index.ts';
+const[source,output]=process.argv.slice(2);if(!source||!output)throw new Error('Expected source XP3 and new name record output');const index=await xp3Index(source);await writeFile(output,JSON.stringify(index,null,2),{flag:'wx'});console.log('Prepared raw XP3 names: files='+index.files.length+'; names='+index.names.length+'; unknown records='+index.unknown.length);

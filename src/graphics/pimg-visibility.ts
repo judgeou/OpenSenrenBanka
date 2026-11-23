@@ -1,0 +1,10 @@
+import type{PsbValue}from'../formats/psb-value.ts';import type{PimgLayout}from'./pimg-layout.ts';import{PimgPaths}from'./pimg-paths.ts';
+/** Original PSD visibility program; seton never implicitly enables descendant rasters. */
+export function pimgVisibility(layout:PimgLayout,options:Readonly<{[key:string]:PsbValue}>,previous?:ReadonlyMap<number,boolean>):{readonly visible:ReadonlyMap<number,boolean>;readonly rasters:readonly number[]}{
+ const state=new Map<number,boolean>(layout.layers.map(layer=>[layer.id,previous?.get(layer.id)??layer.visible])),paths=new PimgPaths(layout);const set=(name:string,value:boolean,ancestors=false)=>{let layer=layout.byId.get(paths.resolve(name))!;state.set(layer.id,value);while(ancestors&&layer.parentId!==undefined){layer=layout.byId.get(layer.parentId)!;state.set(layer.id,value);}};
+ const list=(value:PsbValue):readonly string[]=>{if(typeof value==='string')return(value.includes(':')?value.split(':'):value.split(',')).filter(Boolean);if(Array.isArray(value)&&value.every(item=>typeof item==='string'))return value as string[];throw new Error('Invalid original PSD layer list');};
+ if(options.seton!==undefined||options.clear!==undefined&&Number(options.clear)!==0)for(const layer of layout.layers)state.set(layer.id,false);
+ if(options.layoff!==undefined)for(const name of list(options.layoff))set(name,false);if(options.layon!==undefined)for(const name of list(options.layon))set(name,true,true);if(options.seton!==undefined)for(const name of list(options.seton))set(name,true);
+ if(options.diff!==undefined){if(typeof options.diff!=='string')throw new Error('Invalid PSD difference name');const rasters=layout.layers.filter(layer=>layer.layerType===0);rasters.forEach((layer,index)=>state.set(layer.id,index===rasters.length-1||layer.name.toLowerCase()===options.diff!.toString().toLowerCase()));}
+ const rasters:number[]=[];for(const layer of layout.layers)if(layer.layerType===0&&state.get(layer.id)){let parent=layer.parentId,visible=true;while(parent!==undefined){if(!state.get(parent)){visible=false;break;}parent=layout.byId.get(parent)!.parentId;}if(visible)rasters.push(layer.id);}return{visible:state,rasters};
+}

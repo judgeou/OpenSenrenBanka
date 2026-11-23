@@ -1,0 +1,52 @@
+#touch-menu{
+  display:none;position:absolute;top:6px;right:6px;z-index:7;
+  min-width:44px;min-height:44px;background:#211a2ae6;
+}
+/* Mixed-input computers can use the touch menu without changing their layout. */
+@media (any-pointer:coarse){#touch-menu:not([hidden]){display:block}}
+#touch-confirm{color:inherit;background:#211a2a;border:1px solid #a98297;border-radius:12px}
+#touch-confirm::backdrop{background:#120f1b9c}
+#touch-confirm form{display:flex;justify-content:flex-end;gap:8px}
+
+/* Only a coarse, non-hovering primary pointer opts into the rotated layout. */
+@media (pointer:coarse) and (hover:none){
+  :root{
+    --touch-top:env(safe-area-inset-top,0px);
+    --touch-right:env(safe-area-inset-right,0px);
+    --touch-bottom:env(safe-area-inset-bottom,0px);
+    --touch-left:env(safe-area-inset-left,0px);
+    --touch-physical-width:calc(100vw - var(--touch-left) - var(--touch-right));
+    --touch-physical-height:calc(100dvh - var(--touch-top) - var(--touch-bottom));
+    --touch-width:var(--touch-physical-width);
+    --touch-height:var(--touch-physical-height);
+    --touch-turn:0deg;
+    -webkit-text-size-adjust:100%;text-size-adjust:100%;
+  }
+  @media (orientation:portrait){
+    :root{--touch-width:var(--touch-physical-height);--touch-height:var(--touch-physical-width);--touch-turn:90deg}
+  }
+
+  /* Modal dialogs paint in the top layer, outside the stage's transform. */
+  #viewport:not(:fullscreen),#panel:modal,#game-menu:modal,#touch-confirm:modal{
+    position:fixed;inset:auto;margin:0;
+    left:calc(var(--touch-left) + var(--touch-physical-width) / 2);
+    top:calc(var(--touch-top) + var(--touch-physical-height) / 2);
+    transform:translate(-50%,-50%) rotate(var(--touch-turn));
+    touch-action:manipulation;
+  }
+  #viewport:not(:fullscreen){
+    width:min(var(--touch-width),calc(var(--touch-height) * 16 / 9));
+    --native-choice-turn:var(--touch-turn);
+  }
+  #panel{--touch-dialog-width:680px}
+  #game-menu{--touch-dialog-width:420px}
+  #touch-confirm{--touch-dialog-width:360px}
+  #panel:modal,#game-menu:modal,#touch-confirm:modal{
+    width:min(var(--touch-dialog-width),calc(var(--touch-width) - 16px));
+    max-width:none;max-height:calc(var(--touch-height) - 16px);
+    padding:clamp(8px,calc(var(--touch-height) * .03),18px);
+    overflow:auto;overscroll-behavior:contain;
+  }
+  #panel-body{max-height:max(3rem,calc(var(--touch-height) - 86px))}
+  #panel button,#game-menu button,#touch-confirm button{min-height:44px}
+}

@@ -1,0 +1,22 @@
+#pc-dialogue-chrome,#pc-shortcuts,#pc-voice-progress{position:absolute;inset:0;pointer-events:none}
+#pc-dialogue-chrome{z-index:6;overflow:hidden}
+#pc-dialogue-chrome [hidden],#pc-dialogue-chrome[hidden]{display:none}
+#pc-shortcuts{transform:translateY(var(--pc-slide));transition:transform 200ms ease-in}
+#pc-shortcuts:is([data-expanded="true"],:focus-within){transform:none;transition-timing-function:ease-out}
+#pc-dialogue-chrome img{position:absolute;user-select:none;pointer-events:none}
+#pc-shortcuts button{position:absolute;pointer-events:auto;min-width:0;min-height:0;padding:0;margin:0;background:none;border:0;border-radius:0;touch-action:manipulation}
+#pc-shortcuts button:disabled{opacity:.45;cursor:default}
+#pc-shortcuts .pc-over,#pc-shortcuts .pc-on{visibility:hidden}
+#pc-shortcuts button:not(:disabled):is(:hover,:focus-visible) .pc-over{visibility:visible}
+#pc-shortcuts button:not(:disabled):is(:hover,:focus-visible) .pc-defo{visibility:hidden}
+#pc-shortcuts button:is([aria-pressed="true"],:active) :is(.pc-defo,.pc-over){visibility:hidden}
+#pc-shortcuts button:is([aria-pressed="true"],:active) .pc-on{visibility:visible}
+#pc-shortcuts button:focus-visible{outline:1px solid #fff;outline-offset:-2px}
+.pc-volume{container-type:size;position:absolute;pointer-events:auto}
+.pc-volume input{position:absolute;inset:0;margin:0;width:100%;height:100%;writing-mode:vertical-lr;direction:rtl;appearance:none;background:none;touch-action:none;cursor:ns-resize}
+.pc-volume input::-webkit-slider-thumb{appearance:none;width:58.33cqw;height:24.35cqh;background:var(--pc-thumb) center / 100% 100% no-repeat}
+#pc-voice-progress{opacity:0}
+#pc-voice-progress.pc-fade{transition:opacity 200ms linear}
+#pc-voice-progress.pc-lit{opacity:1}
+@media (pointer:coarse) and (hover:none){#pc-shortcuts{display:none}}
+@media (prefers-reduced-motion:reduce){#pc-shortcuts,#pc-voice-progress.pc-fade{transition:none}}

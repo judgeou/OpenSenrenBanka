@@ -1,0 +1,8 @@
+# Stable UTF-8 source byte budgets across Windows checkouts.
+*.ts text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+*.py text eol=lf
+*.html text eol=lf
+*.css text eol=lf

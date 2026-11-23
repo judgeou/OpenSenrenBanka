@@ -1,0 +1,30 @@
+#pc-backlog,#pc-history-confirm{color:#fff}
+#pc-backlog::backdrop,#pc-history-confirm::backdrop{background:transparent}
+.pc-replay-surface{position:absolute;inset:0}
+.pc-replay-staging{opacity:0;pointer-events:none}
+.pc-replay-staging canvas{display:block;width:100%;height:100%}
+#pc-backlog [hidden]{display:none}
+#pc-backlog button,#pc-history-confirm button{touch-action:none}
+#pc-backlog img,#pc-history-confirm img{position:absolute;pointer-events:none;user-select:none}
+#pc-backlog .pc-history-scroll{position:absolute;overflow:auto;overscroll-behavior:contain;overflow-anchor:none;scrollbar-width:none;touch-action:none}
+.pc-history-scroll::-webkit-scrollbar{display:none}
+.pc-history-entry{display:grid;grid-template-columns:12.5cqw minmax(0,1fr);gap:.85cqw;position:relative;
+ padding:.6cqw 1.2cqw .8cqw 11.82cqw;font-size:1.68cqw;line-height:1.44;color:#fff;text-shadow:0 1px 3px #2a181d;
+ overflow-wrap:anywhere}
+.pc-history-entry[data-kind=choice]{color:#efdfff}
+.pc-history-entry:focus-within,.pc-history-stop:hover{color:#efdfff;background:#f0d7e529}
+.pc-history-name{text-align:right;align-self:start}
+.pc-history-body{margin:0;white-space:pre-wrap}
+.pc-history-narration .pc-history-body{grid-column:1/-1}
+.pc-history-stop{min-height:8.75cqw;padding-top:1.4cqw}
+.pc-history-stop:has(button:enabled){cursor:pointer}
+.pc-history-stop .pc-save-sprite{margin-top:.72cqw}
+.pc-history-readonly{position:absolute;left:6.25cqw;top:.95cqw;font-size:.8cqw;color:#efdfff}
+.pc-history-scene-title{position:absolute;margin:0;padding-left:5.5cqw;display:flex;align-items:center;background:linear-gradient(90deg,#7f3a5ebd,#b66b8a61,transparent);color:#fff5eb;font-size:2.8cqw}
+#pc-backlog .pc-history-switch{position:absolute;font:600 1.28cqw var(--game-font,system-ui);color:#733b53;border:1px solid #bc9a7f;background:#fff3e5;border-radius:.38cqw}
+.pc-history-caption,.pc-history-notice{position:absolute;display:flex;align-items:center;justify-content:center;font-size:1.34cqw;margin:0}
+.pc-history-notice{justify-content:flex-start;color:#efdfff}
+.pc-history-range{position:absolute;margin:0;appearance:none;writing-mode:vertical-lr;direction:ltr;background:none;cursor:ns-resize;touch-action:none}
+.pc-history-range::-webkit-slider-thumb{appearance:none;width:2.08333cqw;height:2.08333cqw;background:var(--history-thumb) center/100% no-repeat}
+.pc-history-empty{padding-left:12cqw;font-size:1.45cqw}
+#pc-backlog[aria-busy=true] .pc-history-scroll,#pc-backlog[aria-busy=true] button{pointer-events:none}

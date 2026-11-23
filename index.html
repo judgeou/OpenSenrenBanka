@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>OpenSenrenBanka · 芳乃／茉子篇</title><link rel="icon" href="./yoshino.svg" type="image/svg+xml"></head>
+<body><main id="viewport" aria-label="游戏画面">
+  <canvas id="game" width="1920" height="1080" tabindex="-1" aria-label="原剧情画面"></canvas><div id="native-ui"></div>
+  <button id="touch-menu" type="button" aria-haspopup="dialog" aria-controls="game-menu" hidden>菜单</button>
+  <dialog id="game-menu" aria-labelledby="game-menu-title">
+    <header><h2 id="game-menu-title">游戏菜单</h2><form method="dialog"><button id="game-menu-close" autofocus>返回游戏</button></form></header>
+    <div class="game-actions">
+      <button id="auto" aria-pressed="false">自动</button><button id="skip" aria-pressed="false">已读快进</button><button id="history-open">历史</button>
+      <button id="save">快速存档</button><button id="load">快速读档</button><button id="slots-save">存档</button><button id="slots-load">读档</button>
+      <button id="settings">设置</button><button id="back-title">回标题</button>
+    </div>
+  </dialog>
+  <dialog id="panel" aria-labelledby="panel-title"><header><h2 id="panel-title"></h2><button id="panel-close" type="button">返回</button></header><div id="panel-body"></div></dialog>
+  <dialog id="touch-confirm" aria-labelledby="touch-confirm-message">
+    <p id="touch-confirm-message"></p>
+    <form method="dialog"><button value="cancel" autofocus>取消</button><button value="yes">确认</button></form>
+  </dialog>
+  <p id="status" class="sr-status" role="status">正在准备芳乃、茉子篇…</p>
+  <pre id="warning" role="alert" hidden></pre>
+  <section id="story-loading" tabindex="-1" aria-labelledby="story-loading-title" data-phase="idle" hidden>
+    <div class="story-loading-card">
+      <div class="story-loading-kicker">千恋＊万花 · 芳乃、茉子篇</div>
+      <h2 id="story-loading-title">正在开启故事</h2>
+      <p id="story-loading-detail" role="status"></p>
+      <progress id="story-progress" max="5" value="0" aria-label="故事加载进度"></progress>
+      <p id="story-loading-count"></p>
+      <p id="story-loading-hint"></p>
+      <div id="story-loading-actions" hidden><button id="story-loading-retry" type="button">重试</button><button id="story-loading-back" type="button">返回标题</button></div>
+    </div>
+  </section>
+</main><script type="module" src="/app/player/main.ts"></script></body></html>

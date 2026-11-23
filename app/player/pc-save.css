@@ -1,0 +1,34 @@
+/* PIMG positions live in the original 1920×1080 plane. */
+.pc-save-modal:modal{position:fixed;inset:auto;margin:0;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100vw,calc(100dvh * 16 / 9));height:auto;aspect-ratio:16/9;
+ max-width:none;max-height:none;padding:0;border:0;border-radius:0;overflow:hidden;background:transparent;container-type:inline-size;color:#523245;touch-action:manipulation}
+.pc-save-modal::backdrop{background:#190b17aa}
+.pc-save-page::backdrop{background:#170b18}
+.pc-save-page,.pc-save-modal,.pc-q-preview{font-family:var(--game-font,system-ui,sans-serif)}
+.pc-save-modal img,.pc-save-ink,.pc-save-sprite,.pc-save-cell,.pc-q-preview,.pc-q-preview img{position:absolute}
+.pc-save-modal img,.pc-q-preview img{pointer-events:none;user-select:none}
+.pc-save-ink{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;font-size:.95cqw;line-height:1.4;pointer-events:none}
+.pc-save-sprite,.pc-save-cell{padding:0;border:0;border-radius:0;min-width:0;min-height:0;margin:0;overflow:hidden;background:none;color:inherit}
+.pc-save-sprite:disabled{opacity:.45;cursor:default}
+.pc-save-sprite :is(.pc-save-over,.pc-save-on){visibility:hidden}
+.pc-save-sprite:not(:disabled):is(:hover,:focus-visible) .pc-save-over,.pc-save-sprite:not(:disabled):active .pc-save-on{visibility:visible}
+.pc-save-sprite:not(:disabled):is(:hover,:focus-visible,:active):has(.pc-save-over) .pc-save-def{visibility:hidden}
+.pc-save-sprite:not(:disabled):active:has(.pc-save-on) .pc-save-over{visibility:hidden}
+.pc-save-cell[data-selected=true] .pc-save-highlight,.pc-save-cell:focus-visible .pc-save-highlight{visibility:visible}
+.pc-save-highlight{visibility:hidden}
+.pc-save-sprite:focus-visible,.pc-save-cell:focus-visible{outline:2px solid #ab597e;outline-offset:-2px}
+.pc-save-ink.pc-slotdate,.pc-q-preview .pc-save-ink{font-size:.82cqw}
+.pc-save-ink.pc-empty{display:grid;place-items:center;white-space:normal;background:#301c2b16;color:#593148;font-weight:600}
+.pc-save-ink.pc-number{text-align:right;color:#81395b;font-weight:600}
+.pc-save-ink.pc-page-number{text-align:center;font-size:1.08cqw;color:#fff0d5}
+.pc-save-ink.pc-route-chapter{font-size:.51cqw;font-weight:600;line-height:2.45}
+.pc-save-ink.pc-save-failure{background:#211522;color:white;text-align:center;padding:1em}
+.pc-save-ink.pc-detail-date,.pc-save-ink.pc-detail-chapter{font-size:1.39cqw}
+.pc-save-ink.pc-detail-comment{font-size:1.42cqw;line-height:1.55;white-space:normal;overflow-wrap:anywhere}
+.pc-save-ink.pc-notice{font-size:1.14cqw;white-space:normal;line-height:1.35;color:#f5d9e7}
+.pc-q-preview{z-index:7;pointer-events:none;color:#58253f;background:transparent}
+#viewport:has(.pc-q-preview){container-type:inline-size}
+.pc-save-thumb{object-fit:contain}
+@media(pointer:coarse) and (hover:none){
+ .pc-save-modal:modal{left:calc(var(--touch-left) + var(--touch-physical-width) / 2);top:calc(var(--touch-top) + var(--touch-physical-height) / 2);
+  width:min(var(--touch-width),calc(var(--touch-height) * 16 / 9));transform:translate(-50%,-50%) rotate(var(--touch-turn));}
+}

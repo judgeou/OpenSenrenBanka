@@ -1,0 +1,10 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { parseTjsData } from '../src/formats/tjs-data.ts';
+import { branchRules } from '../src/world/branch-flags.ts';
+import type { ScriptValue } from '../src/script/types.ts';
+const [sourceFile, output] = process.argv.slice(2); if (!sourceFile || !output) throw new Error('Expected original chart data and new branch rule output');
+const source = await readFile(sourceFile, 'utf8'), data = parseTjsData(source), rules = branchRules(data as ScriptValue);
+const flags = [...rules.flags].map(([key, rules]) => ({ key, rules })), rows = flags.reduce((count, flag) => count + flag.rules.length, 0);
+await writeFile(output, JSON.stringify({ schemaVersion: 1, format: 'prepared-senren-branch-rules-v1', sourceSha256: createHash('sha256').update(source).digest('hex'), keys: rules.keys, rows, flags }, (_key, value) => typeof value === 'bigint' ? { $integer: String(value) } : value, 2), { flag: 'wx' });
+console.log('Prepared original branch rules: keys=' + rules.keys.length + '; rows=' + rows);

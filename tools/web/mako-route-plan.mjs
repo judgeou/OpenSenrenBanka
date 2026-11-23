@@ -1,0 +1,10 @@
+import {writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import {solveRoute} from './source-route.mjs';
+const [scenarios,start,branches,output]=process.argv.slice(2);
+if(!scenarios||!start||!branches||!output||process.argv.length!==6)throw Error('Expected original SCN directory, start script, branch rules and new route receipt');
+const archive={scenarios:path.resolve(scenarios),start:path.resolve(start),branches:path.resolve(branches)};
+const result=await solveRoute('.',{merged:true,archive});
+const summary={positions:result.parts.length,states:result.audit.exploredStates,terminals:result.audit.terminals,choices:result.audit.choiceScenes,scenarios:[...new Set(result.parts.map(x=>x.asset.id))]};
+await writeFile(path.resolve(output),JSON.stringify({global:summary,policy:result.policy,audit:result.audit},null,2),{flag:'wx'});
+console.log(JSON.stringify(summary));

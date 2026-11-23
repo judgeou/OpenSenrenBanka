@@ -1,0 +1,19 @@
+import {psbRecord} from '../formats/psb-value.ts';import type {PsbValue} from '../formats/psb-value.ts';
+import {ImageResolutions} from './image-resolutions.ts';import {decodeNativeData} from '../world/native-values.ts';import {standBase} from './stand-selection.ts';import type {StandBase} from './stand-selection.ts';import {foregroundPack} from './foreground-pack.ts';import type {ForegroundPack} from './foreground-pack.ts';
+function basename(name:string):string{return name.replaceAll('\\','/').split('/').at(-1)!.toLowerCase();}
+export class ImageDefinitions {
+  private readonly stands=new Map<string,readonly StandBase[]>();private readonly packs=new Map<string,ForegroundPack>();readonly raw:Readonly<{[key:string]:PsbValue}>;
+  constructor(definitions:PsbValue,foreground:PsbValue,private readonly resolutions=new ImageResolutions()){
+    const source=psbRecord(definitions),layers=psbRecord(foreground);if(source.format!=='senren-image-definitions-v1'||layers.format!=='prepared-foreground-packs-v1'||source.failed!==0&&source.failed!==0n||layers.failed!==0&&layers.failed!==0n||!Array.isArray(source.definitions)||!Array.isArray(source.tables)||!Array.isArray(layers.packs))throw new Error('Incomplete native image definition bundle');this.raw=source;
+    const tables=new Map<string,any>();for(const value of source.tables){const table=psbRecord(value);if(typeof table.name!=='string'||!Array.isArray(table.rows))throw new Error('Invalid image table');tables.set(basename(table.name),table.rows);}
+    for(const value of source.definitions){const definition=psbRecord(value);if(typeof definition.name!=='string')throw new Error('Invalid image definition');if(!/[.]stand$/iu.test(definition.name))continue;if(!Array.isArray(definition.value))throw new Error('Invalid stand definition array');
+      const bases=definition.value.map(value=>{const row=psbRecord(value);if(typeof row.filename!=='string')throw new Error('Invalid stand base');const rows=tables.get(basename(row.filename+'_info.txt'));if(!rows)throw new Error('Missing exact stand info table: '+row.filename);return standBase(row,rows);});this.stands.set(basename(definition.name),bases);
+    }
+    for(const value of layers.packs){const pack=psbRecord(value);if(typeof pack.name!=='string'||typeof pack.text!=='string')throw new Error('Invalid foreground metadata');this.packs.set(basename(pack.name),foregroundPack(pack.name,pack.text));}
+  }
+  static async open(definitionsUrl:string|URL,foregroundUrl:string|URL,signal?:AbortSignal,resolutionsUrl?:string|URL):Promise<ImageDefinitions>{const read=async(url:string|URL)=>{const response=await fetch(url,{signal});if(!response.ok)throw new Error('Image definition HTTP '+response.status);return decodeNativeData(await response.text());};const [definitions,foreground]=await Promise.all([read(definitionsUrl),read(foregroundUrl)]);const response=resolutionsUrl?await fetch(resolutionsUrl,{signal}):undefined;if(response&&!response.ok)throw new Error('Original imagemulti HTTP '+response.status);return new ImageDefinitions(definitions,foreground,new ImageResolutions(response?await response.arrayBuffer():undefined));}
+  stand(name:string):readonly StandBase[]{const data=this.stands.get(basename(name));if(!data)throw new Error('Unknown stand definition: '+name);return data;}
+  foreground(name:string):ForegroundPack{const pack=this.packs.get(basename(name).replace(/[.]txt$/iu,'')+'.txt');if(!pack)throw new Error('Unknown foreground layer pack: '+name);return pack;}
+  foregroundVariants(name:string):readonly{readonly pack:ForegroundPack;readonly scale:number}[]{return this.resolutions.resolve(name,file=>this.packs.get(basename(file).replace(/[.]txt$/iu,'')+'.txt'));}
+  foregroundVariant(name:string,scale:number):{readonly pack:ForegroundPack;readonly scale:number}{return this.resolutions.select(this.foregroundVariants(name),scale);}
+}
